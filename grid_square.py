@@ -6,6 +6,6 @@ class Grid_Square(object):
         """:param dirty: Boolean """
         self.dirty = dirty
 
-    def print_dirty(self):
-        print(self.dirty)
+    def get_dirty_status(self):
+        return self.dirty
 
