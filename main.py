@@ -61,7 +61,7 @@ def search_for_dirty_squares(grid, num_rows, num_cols):
     return num_moves
 
 
-def deterministic_search(grid, num_rows, num_cols):
+def reflex_agent_search(grid, num_rows, num_cols):
     ''':param grid: 3 x 3 matrix of Grid_Squares
        :param num_rows: Integer
        :param num_cols: Integer'''
@@ -118,7 +118,9 @@ def main():
 
     # Initialize grid
     grid = [[Grid_Square() for j in range(num_cols)] for i in range(num_rows)]
-    deterministic_search(grid, num_rows, num_cols)
+
+    # Do part (i) of homework - reflex agent search
+    reflex_agent_search(grid, num_rows, num_cols)
 
     
 
