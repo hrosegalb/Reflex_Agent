@@ -201,6 +201,94 @@ def randomized_agent_search(grid, num_rows, num_cols, actions):
         print("Max number of moves: {0}".format(max_moves))
         print("Min number of moves: {0}".format(min_moves))
 
+def reflex_agent_search_dirty_squares_murphys_law(grid, num_rows, num_cols):
+    ''':param grid: 3 x 3 matrix of Grid_Squares
+       :param num_rows: Integer
+       :param num_cols: Integer'''
+       
+    # This flag determines which rule table to use
+    flag = False
+
+    # Randomly assign vacuum agent to a square
+    vacuum_agent = (random.randint(0, 2), random.randint(0, 2))
+    if vacuum_agent == (1,1):
+        flag = True
+
+    num_moves = 0
+    murphys_law_counter = 0
+    dirt_sensor_counter = 0
+    while is_grid_clean(grid, num_rows, num_cols) == False and num_moves < 100:
+        # Check if the square vacuum agent is in is dirty
+        dirty_status = grid[vacuum_agent[0]][vacuum_agent[1]].get_dirty_status()
+
+        if murphys_law_counter % 4 == 0 and dirt_sensor_counter % 10 == 0:
+            # There are two scenarios that can happen here:
+            # (1) Floor is dirty, but sensor thinks it's clean; agent deposits more dirt.  
+            # (2) Floor is clean, but sensor thinks it's dirty; suck action fails to clean floor,
+            # but it doesn't matter because floor is already clean.
+            print("Murphy's Law in effect and dirt sensor is busted.")
+            pass
+        elif murphys_law_counter % 4 == 0:
+            # Either floor is dirty and suck action fails to work or floor is clean and agent deposits
+            # more dirt onto the floor
+            grid[vacuum_agent[0]][vacuum_agent[1]].change_dirt_status(True)
+            print("Murphy's Law in effect. {0} is dirty.".format(vacuum_agent))
+            # Agent moves to next location.
+            next_location = tuple()
+            if flag == True:
+                next_location = flag_on_rule_table[vacuum_agent]
+                if next_location == (0,0):
+                    flag = False
+            else:
+                next_location = flag_off_rule_table[vacuum_agent]
+                if next_location == (1,1):
+                    flag = True
+            vacuum_agent = next_location
+            num_moves += 1
+            print("Agent is moving to {0}. Flag is {1}".format(vacuum_agent, flag))          
+        elif dirt_sensor_counter % 10 == 0:
+            if dirty_status == True:
+                # Sensor will think floor is clean, so it chooses next move
+                next_location = tuple()
+                if flag == True:
+                    next_location = flag_on_rule_table[vacuum_agent]
+                    if next_location == (0,0):
+                        flag = False
+                else:
+                    next_location = flag_off_rule_table[vacuum_agent]
+                    if next_location == (1,1):
+                        flag = True
+                vacuum_agent = next_location
+                num_moves += 1
+                print("Floor is dirty, but dirt sensor is busted. Agent is moving to {0}. Flag is {1}".format(vacuum_agent, flag))
+            else:
+                # Sensor thinks floor is dirty, so it chooses to suck
+                grid[vacuum_agent[0]][vacuum_agent[1]].change_dirt_status(False)
+                print("Floor is clean, but dirt sensor is busted. Vacuum chooses to suck.")
+        else:
+            # Murphy's Law not in effect
+            if dirty_status == True:
+                grid[vacuum_agent[0]][vacuum_agent[1]].change_dirt_status(False)
+                print("Vacuum has cleaned floor.")
+            else:
+                # Find next location to move to
+                next_location = tuple()
+                if flag == True:
+                    next_location = flag_on_rule_table[vacuum_agent]
+                    if next_location == (0,0):
+                        flag = False
+                else:
+                    next_location = flag_off_rule_table[vacuum_agent]
+                    if next_location == (1,1):
+                        flag = True
+                vacuum_agent = next_location
+                print("Floor is clean. Agent is moving to {0}. Flag is {1}".format(vacuum_agent, flag))
+                num_moves += 1
+
+        murphys_law_counter += 1
+        dirt_sensor_counter += 1
+
+    return num_moves
 
 def main():
     # List of actions the agent could choose
@@ -217,7 +305,18 @@ def main():
     #reflex_agent_search(grid, num_rows, num_cols)
 
     # Do part (ii) of homework - randomized agent search
-    randomized_agent_search(grid, num_rows, num_cols, actions)
+    #randomized_agent_search(grid, num_rows, num_cols, actions)
+
+    # Do part (iii) of homework - reflex agent search w/ Murphy's Law
+    # 25% of time suck action fails to clean floor if it's dirty/deposits dirt if it's clean
+    # 10% of the time dirt sensor fails gives wrong answer
+     
+    # Randomly assign a dirty spot in the grid
+    dirty_spot = (random.randint(0,2), random.randint(0,2))
+    grid[dirty_spot[0]][dirty_spot[1]].change_dirt_status(True)
+    print("Dirty spot is located at {0}".format(dirty_spot))
+    
+
 
 
 
