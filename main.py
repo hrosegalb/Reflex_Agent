@@ -112,6 +112,9 @@ def reflex_agent_search(grid, num_rows, num_cols):
 
 
 def main():
+    # List of actions the agent could choose
+    actions = ["left", "right", "up", "down", "suck", "nothing"]
+
     # Grid dimensions
     num_rows = 3
     num_cols = 3
@@ -120,7 +123,51 @@ def main():
     grid = [[Grid_Square() for j in range(num_cols)] for i in range(num_rows)]
 
     # Do part (i) of homework - reflex agent search
-    reflex_agent_search(grid, num_rows, num_cols)
+    #reflex_agent_search(grid, num_rows, num_cols)
+
+    # Do part (ii) of homework - randomized agent search
+
+    # Create a dirty spot in the grid
+    dirty_spot = (random.randint(0,2), random.randint(0,2))
+    grid[dirty_spot[0]][dirty_spot[1]].change_dirt_status(True)
+    print("Dirty spot is located ({0},{1})".format(dirty_spot[0], dirty_spot[1]))
+
+    # Randomly assign the vacuum to a spot on the grid
+    vacuum_agent = (random.randint(0,2), random.randint(0,2))
+    print("Vacuum agent is located ({0},{1})".format(vacuum_agent[0], vacuum_agent[1]))
+
+    # Randomly choose an action for the agent
+    rand_index = random.randint(0, (len(actions)-1))
+    print("Action chosen: {0}".format(actions[rand_index]))
+
+    if actions[rand_index] == "suck":
+        grid[vacuum_agent[0]][vacuum_agent[1]].change_dirt_status(False)
+        print("Vacuum has chosen to suck.")
+    elif actions[rand_index] == "nothing":
+        print("Vacuum has chosen to do nothing.")
+        pass
+    else:
+        next_location = tuple()
+        if actions[rand_index] == "left":
+            next_location = (vacuum_agent[0], vacuum_agent[1]-1)
+            print("Next location would be: {0}".format(next_location))
+        elif actions[rand_index] == "right":
+            next_location = (vacuum_agent[0], vacuum_agent[1]+1)
+            print("Next location would be: {0}".format(next_location))
+        elif actions[rand_index] == "up":
+            next_location = (vacuum_agent[0]-1, vacuum_agent[1])
+            print("Next location would be: {0}".format(next_location))
+        else:
+            next_location = (vacuum_agent[0]+1, vacuum_agent[1])
+            print("Next location would be: {0}".format(next_location))
+        
+        if next_location[0] < 0 or next_location[0] > 2 or next_location[1] < 0 or next_location[1] > 2:
+            next_location = vacuum_agent
+
+        vacuum_agent = next_location
+        print("Vacuum will go to location {0}".format(vacuum_agent))
+
+
 
     
 
