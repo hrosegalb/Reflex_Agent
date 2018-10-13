@@ -119,47 +119,35 @@ def random_search_for_dirty_squares(grid, num_rows, num_cols, actions):
 
     # Randomly assign the vacuum to a spot on the grid
     vacuum_agent = (random.randint(0,2), random.randint(0,2))
-    #print("Vacuum agent is located ({0},{1})".format(vacuum_agent[0], vacuum_agent[1]))
 
     # Begin random search
     num_moves = 0
     while is_grid_clean(grid, num_rows, num_cols) == False and num_moves < 20:
         # Randomly choose an action for the agent
         rand_index = random.randint(0, (len(actions)-1))
-        #print("\nAction chosen: {0}".format(actions[rand_index]))
 
         # Perform action
         if actions[rand_index] == "suck":
             grid[vacuum_agent[0]][vacuum_agent[1]].change_dirt_status(False)
-            #print("Vacuum has chosen to suck.")
         elif actions[rand_index] == "nothing":
-            #print("Vacuum has chosen to do nothing.")
             pass
         else:
             next_location = tuple()
             if actions[rand_index] == "left":
                 next_location = (vacuum_agent[0], vacuum_agent[1]-1)
-                #print("Next location would be: {0}".format(next_location))
             elif actions[rand_index] == "right":
                 next_location = (vacuum_agent[0], vacuum_agent[1]+1)
-                #print("Next location would be: {0}".format(next_location))
             elif actions[rand_index] == "up":
                 next_location = (vacuum_agent[0]-1, vacuum_agent[1])
-                #print("Next location would be: {0}".format(next_location))
             else:
                 next_location = (vacuum_agent[0]+1, vacuum_agent[1])
-                #print("Next location would be: {0}".format(next_location))
         
             if next_location[0] < 0 or next_location[0] > 2 or next_location[1] < 0 or next_location[1] > 2:
                 next_location = vacuum_agent
             vacuum_agent = next_location
 
-            #print("Vacuum will go to location {0}".format(vacuum_agent))
             num_moves += 1
 
-    #status = is_grid_clean(grid, num_rows, num_cols)
-    #print("\nis_grid_clean status: {0}".format(status))
-    #print("Num moves: {0}".format(num_moves))
     return num_moves
 
 
@@ -212,8 +200,6 @@ def randomized_agent_search(grid, num_rows, num_cols, actions):
         print("Average number of moves: {0}".format(avg_num_moves))
         print("Max number of moves: {0}".format(max_moves))
         print("Min number of moves: {0}".format(min_moves))
-
-
 
 
 def main():
